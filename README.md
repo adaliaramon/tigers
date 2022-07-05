@@ -8,7 +8,7 @@ Add the following to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-tigers = "0.1.1"
+tigers = "0.1.2"
 ```
 
 ## Examples
@@ -22,8 +22,16 @@ fn main() {
         eprintln!("Usage: {} <path>", args[0]);
         std::process::exit(1);
     }
-    let df: DataFrame = DataFrame::from_csv(&args[1]).unwrap();
+    let df: DataFrame = match DataFrame::from_csv(&args[1]) {
+        Ok(df) => df,
+        Err(e) => {
+            eprintln!("Error reading CSV file \"{}\": {}", args[1], e);
+            std::process::exit(1);
+        }
+    };
     println!("{}", df.head(5));
+    println!("{}", df["Compound name"]);
+    println!("{}", df[0]);
 }
 ```
 

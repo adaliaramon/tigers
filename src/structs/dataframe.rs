@@ -32,9 +32,30 @@ impl DataFrame {
         let mut reader = csv::Reader::from_path(path)?;
         let mut rows: Vec<Row> = Vec::new();
         let headers: Vec<String> = reader.headers()?.iter().map(|h| h.to_string()).collect();
+        if headers.is_empty() {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidData,
+                "No headers found in CSV file",
+            ));
+        }
         for result in reader.records() {
             let values: Vec<String> = result?.iter().map(|v| v.to_string()).collect();
+            if values.len() != headers.len() {
+                return Err(std::io::Error::new(
+                    std::io::ErrorKind::InvalidData,
+                    format!(
+                        "Number of values in row {} does not match number of headers",
+                        rows.len() + 1
+                    ),
+                ));
+            }
             rows.push(Row::new(headers.clone(), values));
+        }
+        if rows.is_empty() {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidData,
+                "No rows found in CSV file",
+            ));
         }
         let df: DataFrame = DataFrame::new(headers, rows);
         Ok(df)
