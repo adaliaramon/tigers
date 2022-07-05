@@ -8,7 +8,7 @@ Add the following to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-tigers = "0.1.0"
+tigers = "0.1.1"
 ```
 
 ## Examples
