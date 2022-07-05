@@ -1,3 +1,5 @@
+use crate::{left_pad, max_length};
+
 #[derive(Debug, Clone)]
 pub struct Row {
     headers: Vec<String>,
@@ -24,25 +26,17 @@ impl std::ops::Index<usize> for Row {
 
 impl std::fmt::Display for Row {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        let mut s = String::new();
-        let header_width = self
-            .headers
-            .iter()
-            .map(|header| header.len())
-            .max()
-            .unwrap();
-        let value_width = self.values.iter().map(|value| value.len()).max().unwrap();
+        let header_width = max_length!(self.headers);
+        let value_width = max_length!(self.values);
         let w = 4;
 
         for (i, header) in self.headers.iter().enumerate() {
-            s.push_str(&" ".repeat(header_width - header.len()));
-            s.push_str(header);
-            s.push_str(&" ".repeat(w));
-            s.push_str(&" ".repeat(value_width - self.values[i].len()));
-            s.push_str(&self.values[i]);
-            s.push('\n');
+            write!(f, "{}", left_pad!(header, header_width))?;
+            write!(f, "{}", " ".repeat(w))?;
+            write!(f, "{}", left_pad!(&self.values[i], value_width))?;
+            writeln!(f)?;
         }
 
-        write!(f, "{}", s)
+        Ok(())
     }
 }

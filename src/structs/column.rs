@@ -1,3 +1,5 @@
+use crate::{left_pad, max_length};
+
 #[derive(Debug)]
 pub struct Column {
     header: String,
@@ -16,30 +18,24 @@ impl Column {
 
 impl std::fmt::Display for Column {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        let mut s = String::new();
         let index_width = (self.values.len() - 1).to_string().len();
-        let value_width = self
-            .values
-            .iter()
-            .map(|value| value.len())
-            .max()
-            .unwrap()
-            .max(self.header.len());
+        let value_width = max_length!(self.values).max(self.header.len());
         let w = 4;
 
-        s.push_str(&" ".repeat(index_width + value_width + w - self.header.len()));
-        s.push_str(&self.header);
-        s.push('\n');
+        write!(
+            f,
+            "{}",
+            left_pad!(&self.header, index_width + value_width + w)
+        )?;
+        writeln!(f)?;
 
         for (i, value) in self.values.iter().enumerate() {
-            s.push_str(&" ".repeat(index_width - i.to_string().len()));
-            s.push_str(&i.to_string());
-            s.push_str(&" ".repeat(w));
-            s.push_str(&" ".repeat(value_width - value.len()));
-            s.push_str(value);
-            s.push('\n');
+            write!(f, "{}", left_pad!(&i.to_string(), index_width))?;
+            write!(f, "{}", " ".repeat(w))?;
+            write!(f, "{}", left_pad!(value, value_width))?;
+            writeln!(f)?;
         }
 
-        write!(f, "{}", s)
+        Ok(())
     }
 }

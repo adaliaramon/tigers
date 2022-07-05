@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{structs::column::Column, structs::row::Row};
+use crate::{left_pad, max_length, structs::column::Column, structs::row::Row};
 
 #[derive(Debug)]
 pub struct DataFrame {
@@ -95,44 +95,35 @@ impl std::ops::Index<&str> for DataFrame {
 
 impl std::fmt::Display for DataFrame {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        let mut s = String::new();
         let w = 4;
 
         // Compute the width of each column
-        // The width of each column is the maximum width of the values in that column,
-        // including the header, plus 4 spaces for separation.
         let widths: Vec<usize> = self
             .headers
             .iter()
-            .map(|header| {
-                let column = &self.columns[header];
-                let max_width = column.iter().map(|value| value.len()).max().unwrap();
-                std::cmp::max(max_width, header.len())
-            })
+            .map(|header| max_length!(&self.columns[header]).max(header.len()))
             .collect();
 
         // Right-align the headers
         for (i, header) in self.headers.iter().enumerate() {
-            s.push_str(&" ".repeat(widths[i] - header.len()));
-            s.push_str(header);
+            write!(f, "{}", left_pad!(header, widths[i]))?;
             if i < self.headers.len() - 1 {
-                s.push_str(&" ".repeat(w));
+                write!(f, "{}", " ".repeat(w))?;
             }
         }
-        s.push('\n');
+        writeln!(f)?;
 
         // Right-align the values
         for row in &self.rows {
             for (i, value) in row.get_values().iter().enumerate() {
-                s.push_str(&" ".repeat(widths[i] - value.len()));
-                s.push_str(value);
+                write!(f, "{}", left_pad!(value, widths[i]))?;
                 if i < row.get_values().len() - 1 {
-                    s.push_str(&" ".repeat(w));
+                    write!(f, "{}", " ".repeat(w))?;
                 }
             }
-            s.push('\n');
+            writeln!(f)?;
         }
 
-        write!(f, "{}", s)
+        Ok(())
     }
 }
