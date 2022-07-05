@@ -8,4 +8,6 @@ fn main() {
     }
     let df: DataFrame = DataFrame::from_csv(&args[1]).unwrap();
     println!("{}", df.head(5));
+    println!("{}", df["Compound name"]);
+    println!("{}", df[0]);
 }

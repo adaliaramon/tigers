@@ -21,3 +21,28 @@ impl std::ops::Index<usize> for Row {
         &self.values[index]
     }
 }
+
+impl std::fmt::Display for Row {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        let mut s = String::new();
+        let header_width = self
+            .headers
+            .iter()
+            .map(|header| header.len())
+            .max()
+            .unwrap();
+        let value_width = self.values.iter().map(|value| value.len()).max().unwrap();
+        let w = 4;
+
+        for (i, header) in self.headers.iter().enumerate() {
+            s.push_str(&" ".repeat(header_width - header.len()));
+            s.push_str(header);
+            s.push_str(&" ".repeat(w));
+            s.push_str(&" ".repeat(value_width - self.values[i].len()));
+            s.push_str(&self.values[i]);
+            s.push('\n');
+        }
+
+        write!(f, "{}", s)
+    }
+}

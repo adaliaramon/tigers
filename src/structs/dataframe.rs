@@ -1,9 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{
-    structs::column::Column,
-    structs::row::Row,
-};
+use crate::{structs::column::Column, structs::row::Row};
 
 #[derive(Debug)]
 pub struct DataFrame {
