@@ -124,14 +124,16 @@ impl std::fmt::Display for DataFrame {
         writeln!(f)?;
 
         // Right-align the values
-        for row in &self.rows {
+        for (i, row) in self.rows.iter().enumerate() {
             for (i, value) in row.get_values().iter().enumerate() {
                 write!(f, "{}", left_pad!(value, widths[i]))?;
                 if i < row.get_values().len() - 1 {
                     write!(f, "{}", " ".repeat(w))?;
                 }
             }
-            writeln!(f)?;
+            if i < self.rows.len() - 1 {
+                writeln!(f)?;
+            }
         }
 
         Ok(())

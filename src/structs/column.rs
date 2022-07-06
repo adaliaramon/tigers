@@ -33,7 +33,9 @@ impl std::fmt::Display for Column {
             write!(f, "{}", left_pad!(&i.to_string(), index_width))?;
             write!(f, "{}", " ".repeat(w))?;
             write!(f, "{}", left_pad!(value, value_width))?;
-            writeln!(f)?;
+            if i < self.values.len() - 1 {
+                writeln!(f)?;
+            }
         }
 
         Ok(())

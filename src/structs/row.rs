@@ -41,7 +41,9 @@ impl std::fmt::Display for Row {
             write!(f, "{}", left_pad!(header, header_width))?;
             write!(f, "{}", " ".repeat(w))?;
             write!(f, "{}", left_pad!(&self.values[i], value_width))?;
-            writeln!(f)?;
+            if i < self.headers.len() - 1 {
+                writeln!(f)?;
+            }
         }
 
         Ok(())

@@ -18,4 +18,6 @@ fn main() {
         ("m/z".to_string(), "Mass".to_string()),
     ]);
     println!("{}", df.rename(map).head(5));
+    println!("{}", df["Compound name"]);
+    println!("{}", df[0])
 }
