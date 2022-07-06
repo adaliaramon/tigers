@@ -14,6 +14,13 @@ impl Row {
     pub(crate) fn get_values(&self) -> &Vec<String> {
         &self.values
     }
+
+    pub(crate) fn rename(&self, new_headers: &[String]) -> Row {
+        Row {
+            headers: new_headers.to_owned(),
+            values: self.values.clone(),
+        }
+    }
 }
 
 impl std::ops::Index<usize> for Row {

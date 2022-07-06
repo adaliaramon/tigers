@@ -13,7 +13,9 @@ fn main() {
             std::process::exit(1);
         }
     };
-    println!("{}", df.head(5));
-    println!("{}", df["Compound name"]);
-    println!("{}", df[0]);
+    let map = &std::collections::HashMap::from([
+        ("Compound name".to_string(), "Name".to_string()),
+        ("m/z".to_string(), "Mass".to_string()),
+    ]);
+    println!("{}", df.rename(map).head(5));
 }

@@ -75,6 +75,16 @@ impl DataFrame {
         let rows = self.rows.iter().take(n).cloned().collect();
         DataFrame::new(headers, rows)
     }
+
+    pub fn rename(&self, map: &HashMap<String, String>) -> DataFrame {
+        let headers = self
+            .headers
+            .iter()
+            .map(|h| map.get(h).unwrap_or(h).clone())
+            .collect::<Vec<String>>();
+        let rows = self.rows.iter().map(|r| r.rename(&headers)).collect();
+        DataFrame::new(headers, rows)
+    }
 }
 
 impl std::ops::Index<usize> for DataFrame {
